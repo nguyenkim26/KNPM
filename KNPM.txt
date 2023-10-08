@@ -1,0 +1,60 @@
+import hashlib
+import time
+
+def mine_block(previous_block_hash):
+  """Tạo một khối mới trong blockchain.
+
+  Args:
+    previous_block_hash: Khối trước đó trong blockchain.
+
+  Returns:
+    Khối mới.
+  """
+
+  current_time = time.time()
+  nonce = 0
+  while True:
+    block_hash = hashlib.sha256(
+        str(previous_block_hash) + str(nonce) + str(current_time)).hexdigest()
+    if block_hash.startswith("00000"):
+      break
+    nonce += 1
+
+  return {
+      "previous_block_hash": previous_block_hash,
+      "nonce": nonce,
+      "timestamp": current_time,
+  }
+
+def create_blockchain():
+  """Tạo một blockchain mới.
+
+  Returns:
+    Danh sách các khối trong blockchain.
+  """
+
+  blockchain = []
+  blockchain.append({
+      "previous_block_hash": "0",
+      "nonce": 0,
+      "timestamp": time.time(),
+  })
+
+  return blockchain
+
+def main():
+  """Khởi tạo blockchain và bắt đầu khai thác.
+  """
+
+  blockchain = create_blockchain()
+  print("Khởi tạo blockchain thành công!")
+
+  TOTAL_SUPPLY = 100000000000000000
+
+  while True:
+    block = mine_block(blockchain[-1]["previous_block_hash"])
+    blockchain.append(block)
+    print("Khối mới được tạo!")
+
+if __name__ == "__main__":
+  main()
